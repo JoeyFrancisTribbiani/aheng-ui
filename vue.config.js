@@ -1,19 +1,24 @@
-// const path = require('path');
-
-// module.exports = {
-//     configureWebpack: {
-//         module: {
-//             rules: [
-//                 {
-//                     test: /\.(svg|otf|ttf|woff2?|eot|gif|png|jpe?g)(\?\S*)?$/,
-//                     loader: "url-loader",
-//                     // todo: 这种写法有待调整
-//                     query: {
-//                         limit: 10000,
-//                         name: path.posix.join("static", "[name].[hash:7].[ext]")
-//                     }
-//                 }
-//             ]
-//         }
-//     },
-// };
+module.exports = {
+    // 修改 src 为 examples
+    pages: {
+      index: {
+        entry: 'examples/main.js',
+        template: 'public/index.html',
+        filename: 'index.html'
+      }
+    },
+    // 扩展 webpack 配置，使 packages 加入编译
+    chainWebpack: config => {
+      config.module
+        .rule('js')
+        .include
+          .add('/packages')
+          .end()
+        .use('babel')
+          .loader('babel-loader')
+          .tap(options => {
+            // 修改它的选项...
+            return options
+          })
+    }
+}
